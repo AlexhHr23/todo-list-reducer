@@ -1,4 +1,4 @@
-import { CheckIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useTask } from "../hooks/useTask";
 import { priorities } from "../data/priorities";
 import type { Task } from "../types";
@@ -50,6 +50,13 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
           {priorityInfo.name}
         </span>
       )}
+      <button
+        type="button"
+        onClick={() => dispatch({type: 'delete', payload: {id: task.id}})}
+        className="cursor-pointer"
+      >
+        <TrashIcon className="h-4 w-4" color="red"/>
+      </button>
     </div>
   );
 };

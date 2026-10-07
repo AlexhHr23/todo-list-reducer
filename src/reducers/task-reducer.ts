@@ -8,7 +8,7 @@ export type TaskActions =
     { type: 'close-modal'} |
     { type: 'update-task', payload: { id: Task['id'] } } |
     { type: 'chage-status', payload: { id: Task['id'] } } |
-    { type: 'delete', payload: { task: Task['id'] } } |
+    { type: 'delete', payload: { id: Task['id'] } } |
     { type: 'reset' } |
     { type: 'addFilterPriority', payload: { id: Priority['id'] } }
 
@@ -93,8 +93,11 @@ export const taskReducer = (
 
     if (action.type === 'delete') {
 
+        const updatedTasks = state.tasks.filter(task => task.id !== action.payload.id)
+
         return {
-            ...state
+            ...state,
+            tasks: updatedTasks
         }
     }
 

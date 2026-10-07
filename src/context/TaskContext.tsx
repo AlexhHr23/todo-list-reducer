@@ -1,10 +1,13 @@
-import { createContext, useReducer, type Dispatch, type ReactNode } from "react"
+import { createContext, useMemo, useReducer, type Dispatch, type ReactNode } from "react"
 import { InitialState, taskReducer, type TaskActions, type TaskState } from "../reducers/task-reducer"
 
 
 type TaskContextProps = {
     state: TaskState,
     dispatch: Dispatch<TaskActions>
+    totalTask: number
+    completedTasks: number
+    pendingTasks: number
 }
 
 type TaskProviderProps = {
@@ -16,11 +19,18 @@ export const TaskContext = createContext<TaskContextProps>({} as TaskContextProp
 export const TaskProvider = ({children} : TaskProviderProps) => {
     const [state, dispatch] = useReducer(taskReducer, InitialState)
 
+    const totalTask = useMemo(() => state.tasks.length, [state.tasks])
+    const completedTasks = useMemo(() => state.tasks.filter(task => task.status === 'complete').length, [state.tasks])
+     const pendingTasks = useMemo(() => state.tasks.filter(task => task.status === 'pending').length, [state.tasks])
+
     return (
         <TaskContext.Provider
             value={{
                 state,
-                dispatch
+                dispatch,
+                totalTask,
+                completedTasks,
+                pendingTasks
             }}
         >
             {children}

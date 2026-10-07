@@ -4,7 +4,7 @@ import { useTask } from "../hooks/useTask"
 
 export const TaskProgress = () => {
 
-    const { totalTask, completedTasks, pendingTasks } = useTask()
+    const { totalTask, completedTasks, pendingTasks, dispatch } = useTask()
 
     const progress = totalTask > 0 ? +((completedTasks / totalTask) * 100).toFixed(2) : 0
 
@@ -48,9 +48,18 @@ export const TaskProgress = () => {
                     }
                 </div>
 
+                <button
+                    className="bg-indigo-500 text-white rounded-lg p-2 text-center sm:shrink-0 cursor-pointer"
+                    onClick={() => dispatch({type: 'reset'})}
+                >
+                    Resetear
+                </button>
+
                 <div className="bg-gray-300 rounded-lg p-2 text-center sm:shrink-0">
                     Vas por buen camino
                 </div>
+
+
 
             </div>
 

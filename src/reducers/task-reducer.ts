@@ -104,7 +104,9 @@ export const taskReducer = (
     if (action.type === 'reset') {
 
         return {
-            ...state
+            ...state,
+            tasks: [],
+            currentTypeTask: ''
         }
     }
 

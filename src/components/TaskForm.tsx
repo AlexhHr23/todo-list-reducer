@@ -1,5 +1,6 @@
-import { useState, type ChangeEvent, type SubmitEvent } from "react"
-import type { DrafTask } from "../types"
+import { useEffect, useState, type ChangeEvent, type SubmitEvent } from "react"
+import { v4 as uuidv4 } from 'uuid';
+import type {Task } from "../types"
 import { useTask } from "../hooks/useTask"
 import { listStatus } from "../data/status"
 import { priorities } from "../data/priorities"
@@ -7,7 +8,8 @@ import { ErrorMessage } from "./ErrorMessage"
 
 export const TaskForm = () => {
 
-  const [task, setTask] = useState<DrafTask>({
+  const [task, setTask] = useState<Task>({
+    id: uuidv4(),
     description: '',
     status: '',
     priority: ''
@@ -16,6 +18,13 @@ export const TaskForm = () => {
   const [error, setError] = useState('')
 
   const { dispatch, state } = useTask()
+
+  useEffect(() => {
+    if(state.editingId) {
+      const  taskSelected = state.tasks.filter(task => task.id === state.editingId)[0]
+      setTask(taskSelected)
+    }
+  }, [state.editingId])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -45,7 +54,7 @@ export const TaskForm = () => {
     if (state.editingId) {
       dispatch({
         type: 'update-task',
-        payload: { id: state.editingId }
+        payload: { task: task }
       })
     } else {
       dispatch({

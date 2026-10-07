@@ -1,4 +1,4 @@
-import { CheckIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { CheckIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
 import { useTask } from "../hooks/useTask";
 import { priorities } from "../data/priorities";
 import type { Task } from "../types";
@@ -56,6 +56,13 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
         className="cursor-pointer"
       >
         <TrashIcon className="h-4 w-4" color="red"/>
+      </button>
+      <button
+        type="button"
+        onClick={() => dispatch({type: 'set-editingId', payload: {id: task.id}})}
+        className="cursor-pointer"
+      >
+        <PencilIcon className="h-4 w-4" color="blue"/>
       </button>
     </div>
   );

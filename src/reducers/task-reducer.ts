@@ -1,12 +1,12 @@
-import { v4 as uuidv4 } from 'uuid';
-import type { DrafTask, Priority, Task } from "../types";
-import {TASK_STATUS } from '../data/status';
+import type {Priority, Task } from "../types";
+import { TASK_STATUS } from '../data/status';
 
 export type TaskActions =
-    { type: 'add-task', payload: { task: DrafTask } } |
-    { type: 'show-modal'} |
-    { type: 'close-modal'} |
-    { type: 'update-task', payload: { id: Task['id'] } } |
+    { type: 'add-task', payload: { task: Task } } |
+    { type: 'show-modal' } |
+    { type: 'close-modal' } |
+    { type: 'set-editingId', payload: { id: Task['id'] } } |
+    { type: 'update-task', payload: { task: Task } } |
     { type: 'chage-status', payload: { id: Task['id'] } } |
     { type: 'delete', payload: { id: Task['id'] } } |
     { type: 'reset' } |
@@ -31,10 +31,9 @@ export const InitialState: TaskState = {
     currentTypeTask: '',
 }
 
-const createTask = (drafTask: DrafTask) : Task => {
+const createTask = (task: Task): Task => {
     return {
-        ...drafTask,
-        id: uuidv4(),
+        ...task,
         status: TASK_STATUS.PENDING
     }
 }
@@ -45,7 +44,7 @@ export const taskReducer = (
 ) => {
 
     if (action.type === 'add-task') {
-       const newTask = createTask(action.payload.task)
+        const newTask = createTask(action.payload.task)
         return {
             ...state,
             tasks: [...state.tasks, newTask],
@@ -53,35 +52,49 @@ export const taskReducer = (
         }
     }
 
-     if (action.type === 'show-modal') {
+    if (action.type === 'show-modal') {
         return {
             ...state,
             modal: true
         }
     }
 
-      if (action.type === 'close-modal') {
+    if (action.type === 'close-modal') {
         return {
             ...state,
-            modal: false
+            modal: false,
+            editingId: '',
+        }
+    }
+
+    if (action.type === 'set-editingId') {
+        return {
+            ...state,
+            editingId: action.payload.id,
+            modal: true
         }
     }
 
     if (action.type === 'update-task') {
 
+        const updatedTasks = state.tasks.map(task => task.id === action.payload.task.id ? action.payload.task : task)
+
         return {
-            ...state
+            ...state,
+            tasks: updatedTasks,
+            modal: false,
+            editingId: ''
         }
     }
 
-      if (action.type === 'chage-status') {
+    if (action.type === 'chage-status') {
         const tasks = state.tasks.map(task => {
-            if(task.id === action.payload.id){
+            if (task.id === action.payload.id) {
                 return {
                     ...task,
                     status: task.status === 'pending' ? TASK_STATUS.COMPLETE : TASK_STATUS.PENDING
                 }
-            } else 
+            } else
                 return task
         })
 
